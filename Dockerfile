@@ -33,6 +33,5 @@ RUN set -xe; \
   && apk del .build-deps \
   && rm -rf /tmp/* /var/cache/apk/*
 
-RUN mkdir /usr/local/phar \
-    && curl -OsSL https://getcomposer.org/composer.phar \
-    && mv composer.phar /usr/local/phar
+RUN curl -OsSL https://getcomposer.org/composer.phar \
+    && mv composer.phar /usr/local/bin/composer
