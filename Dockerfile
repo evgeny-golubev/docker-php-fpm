@@ -33,5 +33,4 @@ RUN set -xe; \
   && apk del .build-deps \
   && rm -rf /tmp/* /var/cache/apk/*
 
-RUN curl -OsSL https://getcomposer.org/composer.phar \
-    && mv composer.phar /usr/local/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
