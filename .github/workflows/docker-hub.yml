@@ -24,5 +24,4 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: egolubev/php-fpm-alpine
         tag_with_ref: true
-        tag_with_sha: true
         add_git_labels: true
