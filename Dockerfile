@@ -31,7 +31,7 @@ RUN set -xe; \
   && apk add --no-cache --virtual .imagick-runtime-deps imagemagick \
   # Cleanup build deps
   && apk del .build-deps \
-  && apk add --no-cache git openssh && \
+  && apk add --no-cache git openssh \
   && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apk/*
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
