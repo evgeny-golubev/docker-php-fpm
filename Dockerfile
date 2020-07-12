@@ -13,6 +13,7 @@ ENV EXT_DEPS \
   libwebp-dev \
   imagemagick-dev \
   libmemcached-dev \
+  zip \
   libzip-dev \
   libtool
 
@@ -25,8 +26,6 @@ RUN set -xe; \
   && docker-php-ext-configure gd \
     --with-freetype \
     --with-jpeg \
-  && docker-php-ext-configure zip \
-    --with-libzip=/usr/include \
   && pecl install imagick && pecl install redis && pecl install memcached \
   && NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
   && docker-php-ext-install -j${NPROC} bcmath exif gd mysqli pdo pdo_mysql zip \
