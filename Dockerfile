@@ -13,6 +13,7 @@ ENV EXT_DEPS \
   libwebp-dev \
   imagemagick-dev \
   libmemcached-dev \
+  libzip-dev \
   libtool
 
 RUN set -xe; \
@@ -24,10 +25,12 @@ RUN set -xe; \
   && docker-php-ext-configure gd \
     --with-freetype \
     --with-jpeg \
+  && docker-php-ext-configure zip \
+    --with-libzip=/usr/include \
   && pecl install imagick && pecl install redis && pecl install memcached \
   && NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
-  && docker-php-ext-install -j${NPROC} bcmath exif gd mysqli pdo pdo_mysql \
-  && docker-php-ext-enable bcmath exif gd imagick mysqli pdo pdo_mysql memcached redis \
+  && docker-php-ext-install -j${NPROC} bcmath exif gd mysqli pdo pdo_mysql zip \
+  && docker-php-ext-enable bcmath exif gd imagick mysqli pdo pdo_mysql memcached redis zip \
   && apk add --no-cache --virtual .imagick-runtime-deps imagemagick \
   # Cleanup build deps
   && apk del .build-deps \
