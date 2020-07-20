@@ -1,39 +1,19 @@
-FROM php:7.4.7-fpm-alpine
+FROM php:7.4.8-fpm-alpine
 
 MAINTAINER Evgeny Golubev <evgeny@golubev.eu>
 
-ENV EXT_DEPS \
-  freetype \
-  libpng \
-  libjpeg-turbo \
-  libwebp \
-  freetype-dev \
-  libpng-dev \
-  libjpeg-turbo-dev \
-  libwebp-dev \
-  imagemagick-dev \
-  libmemcached-dev \
-  zip \
-  libzip-dev \
-  libtool
+# Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+
+# PHP Extensions Installer
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
 RUN set -xe; \
   apk --no-cache update && apk --no-cache upgrade \
-  && apk add --no-cache $EXT_DEPS \
-  && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-  && docker-php-ext-configure bcmath \
-  && docker-php-ext-configure exif \
-  && docker-php-ext-configure gd \
-    --with-freetype \
-    --with-jpeg \
-  && pecl install imagick && pecl install redis && pecl install memcached \
-  && NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
-  && docker-php-ext-install -j${NPROC} bcmath exif gd mysqli pdo pdo_mysql zip \
-  && docker-php-ext-enable bcmath exif gd imagick mysqli pdo pdo_mysql memcached redis zip \
-  && apk add --no-cache --virtual .imagick-runtime-deps imagemagick \
-  # Cleanup build deps
-  && apk del .build-deps \
-  && apk add --no-cache git openssh \
-  && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apk/*
+  && apk add --no-cache git openssh
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+# PHP Extensions
+RUN install-php-extensions mcrypt redis memcached bcmath exif gd gettext mysqli pdo_mysql zip pcntl soap yaml mongodb
+
+# Cleanup build deps
+RUN rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apk/*
